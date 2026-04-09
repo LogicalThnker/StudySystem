@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StudySystem"
+        xmlns:controls="clr-namespace:StudySystem.Controls"
         mc:Ignorable="d"
         Title="Study System" 
         Height="700" 
@@ -18,11 +19,11 @@
             <Setter Property="Width" Value="160"/>
             <Setter Property="Height" Value="45"/>
             <Setter Property="Margin" Value="0,6,0,6"/>
-            <Setter Property="Foreground" Value="#C6C6C6"/>
-            <Setter Property="Background" Value="#2A2A2A"/>
+            <Setter Property="Foreground" Value="#E5E5E5"/>
+            <Setter Property="Background" Value="#353535"/>
             <Setter Property="BorderBrush" Value="#C6C6C6"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontWeight" Value="Normal"/>
             <Setter Property="FontFamily" Value="Meiryo UI"/>
             <Setter Property="FontSize" Value="20"/>
             <Setter Property="Template">
@@ -62,25 +63,29 @@
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
-                    
-                    
+
+
                 </Setter.Value>
             </Setter>
         </Style>
 
         <Style x:Key="DifficultyButtonStyle" TargetType="Button">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="14"/>
             <Setter Property="Foreground" Value="#C6C6C6"/>
             <Setter Property="BorderBrush" Value="#C6C6C6"/>
-            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="Background" Value="#2D2D2D"/>
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Height" Value="24"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="ButtonBorder"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="6">
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
                             <ContentPresenter HorizontalAlignment="Center"
                                               VerticalAlignment="Center"/>
                         </Border>
@@ -93,10 +98,6 @@
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.70"/>
                             </Trigger>
-
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.40"/>
-                            </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
 
@@ -105,49 +106,122 @@
             </Setter>
         </Style>
 
+        <Style x:Key="TempButtonStyle">
+            
+        </Style>
+
     </Window.Resources>
     <Grid x:Name="MainGrid" Background="#202020">
 
+        <!-- HomeScreen -->
         <Grid x:Name="HomeScreen" Background="#202020" Visibility="Visible">
             <StackPanel HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Width="700">
-                <TextBlock Text="Study System"
-                   Foreground="#C6C6C6"
-                   FontSize="80"
-                   FontFamily="Segoe UI"
-                   Margin="5" 
-                   HorizontalAlignment="Center" >
-                    <TextBlock.Effect>
-                        <DropShadowEffect Color="#3E454B"
-                                  BlurRadius="0"
-                                  ShadowDepth="1"
-                                  Opacity="1" />
-                    </TextBlock.Effect>
-                </TextBlock>
-                <Button Content="S t u d y"
-                        Style="{StaticResource MenuButtonStyle}"
-                        Click="StudyButton_Click"/>
+                <Grid x:Name="TitleContainer">
+                    <TextBlock Text="Study System" Foreground="#C6C6C6"
+                               FontSize="80" FontFamily="Segoe UI"
+                               Margin="5,5,5,35" HorizontalAlignment="Center" >
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="#3E454B" BlurRadius="0"
+                                              ShadowDepth="1" Opacity="1" />
+                        </TextBlock.Effect>
+                    </TextBlock>
+                </Grid>
+                
+                <!-- Temp Deck Building Button -->
+                <Grid x:Name="TempDeckButton"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Bottom">
+                    <Button Click="CreateTemplateDeck_Click"
+                            ToolTip="Temporary dev tool: creates a template deck for testing."
+                            Width="140" Height="80" FocusVisualStyle="{x:Null}">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="#353535"/>
+                                <Setter Property="BorderBrush" Value="#C6C6C6"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="ButtonBorder"
+                                                    Background="{TemplateBinding Background}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    CornerRadius="6">
+                                                <ContentPresenter HorizontalAlignment="Center"
+                                                                  VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="ButtonBorder"
+                                                            Property="Background" Value="#3A3A3A"/>
+                                                </Trigger>
 
-                <Button Content="S e t t i n g s"
-                        Style="{StaticResource MenuButtonStyle}"
-                        Click="SettingsButton_Click"/>
+                                                <Trigger Property="IsPressed" Value="True">
+                                                    <Setter TargetName="ButtonBorder"
+                                                            Property="Background" Value="#505050"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                        <TextBlock TextAlignment="Center"
+                                   FontFamily="Segoe UI" FontSize="22"
+                                   Foreground="#C6C6C6">
+                            Create Deck
+                            <LineBreak/>
+                            (Template)
+                        </TextBlock>
+                    </Button>
+                </Grid>
 
-                <Button Content="E x i t"
-                        Style="{StaticResource MenuButtonStyle}"
-                        Click="ExitButton_Click"/>
+                <StackPanel x:Name="ButtonsContainer">
+                    <Button Content="Study" Style="{StaticResource MenuButtonStyle}"
+                            ToolTip="Brings to StudyScreen - WIP"
+                            Click="StudyButton_Click"/>
+
+                    <Button Content="Edit Deck" Style="{StaticResource MenuButtonStyle}"
+                            ToolTip="Brings to EditDeckScreen - WIP"
+                            Click="BuilderButton_Click"/>
+
+                    <Button Content="Settings" Style="{StaticResource MenuButtonStyle}"
+                            ToolTip="Brings to SettingsScreen - WIP"
+                            Click="SettingsButton_Click"/>
+
+                    <Button Content="Exit" Style="{StaticResource MenuButtonStyle}"
+                            ToolTip="Closes the program."
+                            Click="ExitButton_Click"/>
+                </StackPanel>
             </StackPanel>
         </Grid>
 
+        <!-- StudyScreen -->
         <Grid x:Name="StudyScreen" Background="#202020" Visibility="Collapsed">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,100,660,0">
+                <Button x:Name="ImportDeckButton"
+                        Width="30" Height="30"
+                        BorderThickness="2"
+                        Background="#464646" Foreground="#C6C6C6"
+                        Click="ImportDeckButton_Click">
+                    <Grid>
+                        <Rectangle Width="3" Height="20" Fill="#C6C6C6"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Rectangle Width="20" Height="3" Fill="#C6C6C6"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </Button>
+            </StackPanel>
             <StackPanel HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Width="700">
                 <TextBlock Text="Study Screen"
-                           Foreground="#C6C6C6"
+                           Foreground="#E5E5E5"
                            FontSize="80"
                            FontFamily="Segoe UI"
-                           Margin="5"
+                           Margin="5,5,5,5"
                            HorizontalAlignment="Center" >
                     <TextBlock.Effect>
                         <DropShadowEffect Color="#3E454B"
@@ -165,7 +239,7 @@
                           Margin="0,0,0,20"
                           DisplayMemberPath="Name"
                           Padding="8,0,0,0"
-                          Background="#2E2E2E"
+                          Background="#202020"
                           Foreground="#000000"
                           BorderBrush="#C6C6C6"
                           BorderThickness="1"
@@ -181,22 +255,122 @@
                         </Style>
                     </ComboBox.ItemContainerStyle>
                 </ComboBox>
-                <Button Content="S t u d y"
+                <Button Content="Study"
                         Style="{StaticResource MenuButtonStyle}"
+                        ToolTip="Brings to StudyScreen - WIP"
                         Click="DeckStudyButton_Click"/>
-                <Button Content="B a c k"
+                <Button Content="Back"
                         Style="{StaticResource MenuButtonStyle}"
+                        ToolTip="Brings to HomeScreen atm, not true back - WIP"
                         Click="BackToHomeButton_Click"/>
             </StackPanel>
         </Grid>
 
+        <!-- BuilderScreen -->
+        <Grid x:Name="BuilderScreen" Margin="0,0,0,0"
+              IsEnabled="False" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Title -->
+            <Grid Grid.Row="0">
+                <TextBlock Text="Card Editor" Foreground="#C6C6C6"/>
+            </Grid>
+
+            <!-- Card Builder -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="350"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Inputs -->
+                <Grid Grid.Column="0" Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Front" Foreground="#C6C6C6" Grid.Row="0"
+                               Height="40" FontSize="24" HorizontalAlignment="Center"
+                               Margin="0,0,0,4" Padding="8,5"/>
+                    <TextBox x:Name="BuilderFrontTextBox" Grid.Row="1" Margin="0,0,0,10"
+                             AcceptsReturn="True" TextWrapping="Wrap"
+                             TextChanged="BuilderFields_TextChanged"
+                             Height="44" Width="200" FontSize="20" Padding="8,4"/>
+                    <TextBlock Text="Reading" Foreground="#C6C6C6" Grid.Row="2"
+                               Height="40" FontSize="24" HorizontalAlignment="Center"
+                               Margin="0,0,0,4" Padding="8,5"/>
+                    <TextBox x:Name="BuilderReadingTextBox" Grid.Row="3" Margin="0,0,0,10"
+                             AcceptsReturn="True" TextWrapping="Wrap"
+                             TextChanged="BuilderFields_TextChanged"
+                             Height="44" Width="200" FontSize="20" Padding="8,4"/>
+                    <TextBlock Text="Pronunciation" Foreground="#C6C6C6" Grid.Row="4"
+                               Height="40" FontSize="24" HorizontalAlignment="Center"
+                               Margin="0,0,0,4" Padding="8,5"/>
+                    <TextBox x:Name="BuilderPronunciationTextBox" Grid.Row="5" Margin="0,0,0,10"
+                             AcceptsReturn="True" TextWrapping="Wrap"
+                             TextChanged="BuilderFields_TextChanged"
+                             Height="44" Width="200" FontSize="20" Padding="8,4"/>
+                    <TextBlock Text="Answer" Foreground="#C6C6C6" Grid.Row="6"
+                               Height="40" FontSize="24" HorizontalAlignment="Center"
+                               Margin="0,0,0,4" Padding="8,5"/>
+                    <TextBox x:Name="BuilderAnswerTextBox" Grid.Row="7"
+                             AcceptsReturn="True" TextWrapping="Wrap"
+                             TextChanged="BuilderFields_TextChanged"
+                             Height="44" Width="200" FontSize="20" Padding="8,4"/>
+                </Grid>
+
+                <!-- Preview -->
+                <Grid Grid.Column="1">
+                    <controls:CardView x:Name="EditorCardView"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                </Grid>
+            </Grid>
+
+            <!-- Options #2 -->
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="Home" Margin="0,0,20,20"
+                        Style="{StaticResource MenuButtonStyle}"
+                        ToolTip="Brings to HomeScreen atm, not true back - WIP"
+                        Click="BackToHomeButton_Click"/>
+                <Button x:Name="PreviousCard" Content="Previous" Margin="0,0,20,20"
+                        Style="{StaticResource MenuButtonStyle}"
+                        ToolTip="Does Nothing Currently - WIP"/>
+                <Button x:Name="NextCard" Content="Next" Margin="0,0,20,20"
+                        Style="{StaticResource MenuButtonStyle}"
+                        ToolTip="Does Nothing Currently - WIP"/>
+                <Button x:Name="AddCard" Content="Add" Margin="0,0,0,20"
+                        Style="{StaticResource MenuButtonStyle}"
+                        ToolTip="Does Nothing Currently - WIP"/>
+                <Button x:Name="DeleteCard" Content="Remove" Margin="20,0,0,20"
+                        Style="{StaticResource MenuButtonStyle}"
+                        ToolTip="Does Nothing Currently - WIP"/>
+                <Button x:Name="Save" Content="Save" Margin="20,0,0,20"
+                        Style="{StaticResource MenuButtonStyle}"
+                        ToolTip="Does Nothing Currently - WIP"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- SettingsScreen -->
         <Grid x:Name="SettingsScreen" Background="#202020" Visibility="Collapsed">
             <StackPanel HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Width="700">
                 <TextBlock Text="Settings Screen - WIP"
                            Foreground="#C6C6C6"
-                           FontSize="80"
+                           FontSize="30"
                            FontFamily="Segoe UI"
                            Margin="5"
                            HorizontalAlignment="Center" >
@@ -207,105 +381,65 @@
                                           Opacity="1"/>
                     </TextBlock.Effect>
                 </TextBlock>
-                <Button Content="B a c k"
+                <Button Content="Back"
                         Style="{StaticResource MenuButtonStyle}"
+                        ToolTip="Brings to HomeScreen atm, not true back - WIP"
                         Click="BackToHomeButton_Click"/>
             </StackPanel>
         </Grid>
 
+        <!-- CardScreen -->
         <Grid x:Name="CardScreen" Background="#202020" Visibility="Collapsed">
-            <Border BorderBrush="#292929" BorderThickness="6"
-                    CornerRadius="10" Padding="20" Margin="680,200,680,200"/>
-            <Button Content="B a c k"
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <controls:CardView Grid.Row="0" x:Name="MainCardView"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <StackPanel Grid.Row="1"
+                        x:Name="DifficultyContainer" Orientation="Horizontal"
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Margin="0,20,25,0" Visibility="Visible" Opacity="1.0">
+                <Button x:Name="HardButton" Content="H a r d"
+                        Style="{StaticResource DifficultyButtonStyle}"
+                        Margin="0,0,10,0" Background="#B94A48"
+                        Click="HardButton_Click"/>
+                <Button x:Name="NormalButton" Content="N o r m a l"
+                        Style="{StaticResource DifficultyButtonStyle}"
+                        Margin="10,0,10,0" Background="#C9A227"
+                        Click="NormalButton_Click"/>
+                <Button x:Name="EasyButton" Content="E a s y"
+                        Style="{StaticResource DifficultyButtonStyle}"
+                        Margin="10,0,0,0" Background="#4CAF50"
+                        Click="EasyButton_Click"/>
+            </StackPanel>
+            <StackPanel Grid.Row="2" Orientation="Horizontal"
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Width="160" Height="36" Margin="0,20,25,0">
+                <Button x:Name="ShowAnswerButton" Content="A n s w e r"
+                        Style="{StaticResource MenuButtonStyle}"
+                        ToolTip="Displays The Answer"
+                        Visibility="Visible" IsEnabled="False" Opacity="0.4"
+                        FontFamily="Segoe UI" FontSize="20"
+                        Width="120" Height="32" Margin="34,0,0,0"
+                        Click="ShowAnswerButton_Click"/>
+                <Button x:Name="NextButton" Content="N e x t"
+                        Style="{StaticResource MenuButtonStyle}"
+                        ToolTip="Goes To Next Card"
+                        Visibility="Collapsed" IsEnabled="False"
+                        FontFamily="Segoe UI" FontSize="20"
+                        Width="100" Height="32" Margin="34,0,0,0"
+                        Click="NextCardButton_Click"/>
+            </StackPanel>
+            <Button Grid.Row="3" Content="Back"
                     Style="{StaticResource MenuButtonStyle}"
+                    ToolTip="Brings to StudyScreen atm, not true back - WIP"
                     FontFamily="Segoe UI" FontSize="24"
                     Width="120" Height="32" Margin="20,0,0,46"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Left" VerticalAlignment="Bottom"
                     Click="StudyButton_Click"/>
-
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="1920">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
-                            Margin="0,30,0,40">
-                    <TextBlock x:Name="CardFrontText"
-                               Foreground="#C6C6C6" FontSize="56" FontFamily="Meiryo UI"
-                               Margin="0,0,20,0" HorizontalAlignment="Center" Opacity="1.0"/>
-                    <TextBlock x:Name="CardFuriganaText"
-                               Foreground="#AFAFAF" FontSize="30" FontFamily="Meiryo UI"
-                               Margin="0,0,0,0" HorizontalAlignment="Center" Opacity="0.6"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="4,30,0,40">
-                    <TextBlock x:Name="CardIntonationText" Foreground="#888888"
-                               FontSize="20" FontFamily="Meiryo UI" HorizontalAlignment="Center"/>
-                </StackPanel>
-
-
-
-                <Grid x:Name="AnswerContainer" HorizontalAlignment="Center"
-                      Visibility="Collapsed">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="Answer: "
-                               Foreground="#C6C6C6"
-                               FontSize="22"
-                               FontFamily="Meiryo UI"
-                               Margin="12,-20,0,0"
-                               TextAlignment="Center"/>
-
-                    <TextBlock x:Name="CardAnswerText"
-                               Foreground="#C6C6C6"
-                               FontSize="44"
-                               FontFamily="Meiryo UI"
-                               Margin="0,0,0,0"
-                               HorizontalAlignment="Center"
-                               TextAlignment="Center"/>
-                </Grid>
-
-                <StackPanel x:Name="DifficultyContainer" Orientation="Horizontal"
-                            HorizontalAlignment="Center" Margin="0,0,0,0">
-                    <Button x:Name="HardButton" IsEnabled="True"
-                            Content="H a r d" FontFamily="Segoe UI" FontSize="14"
-                            Style="{StaticResource DifficultyButtonStyle}"
-                            Width="100" Height="24" Margin="0,0,10,0"
-                            Background="#B94A48" BorderThickness="2" BorderBrush="#C6C6C6"
-                            Click="HardButton_Click"/>
-                    <Button x:Name="NormalButton" IsEnabled="True"
-                            Content="N o r m a l" FontFamily="Segoe UI" FontSize="14"
-                            Style="{StaticResource DifficultyButtonStyle}"
-                            Width="100" Height="24" Margin="10,0,10,0"
-                            Background="#C9A227" BorderThickness="2" BorderBrush="#C6C6C6"
-                            Click="NormalButton_Click"/>
-                    <Button x:Name="EasyButton" IsEnabled="True"
-                            Content="E a s y" FontFamily="Segoe UI" FontSize="14"
-                            Style="{StaticResource DifficultyButtonStyle}"
-                            Width="100" Height="24" Margin="10,0,0,0"
-                            Background="#4CAF50" BorderThickness="2" BorderBrush="#C6C6C6"
-                            Click="EasyButton_Click"/>
-
-                </StackPanel>
-                <StackPanel Orientation="Horizontal"
-                            HorizontalAlignment="Center"
-                            Width="160"
-                            Height="36"
-                            Margin="0,20,0,0">
-                    <Button x:Name="NextButton" Content="N e x t"
-                            Style="{StaticResource MenuButtonStyle}"
-                            Visibility="Collapsed" IsEnabled="False"
-                            FontFamily="Segoe UI" FontSize="20"
-                            Width="100" Height="32" Margin="34,0,0,0"
-                            Click="NextCardButton_Click"/>
-                    
-                    <Button x:Name="ShowAnswerButton" Content="A n s w e r"
-                            Style="{StaticResource MenuButtonStyle}"
-                            Visibility="Visible" IsEnabled="True"
-                            FontFamily="Segoe UI" FontSize="20"
-                            Width="100" Height="32" Margin="34,0,0,0"
-                            Click="ShowAnswerButton_Click"/>       
-                    
-                </StackPanel>
-            </StackPanel>
         </Grid>
     </Grid>
 </Window>
