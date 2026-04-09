@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StudySystem.Core
+namespace StudySystem.Core.JCard
 {
     public class Deck
     {

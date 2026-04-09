@@ -1,6 +1,11 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using StudySystem.Core;
+using StudySystem.Core.JCard;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,77 +17,40 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using StudySystem.Core;
+using StudySystem.Controls;
 
 namespace StudySystem
 {
     public partial class MainWindow : Window
     {
         private List<Deck> _decks = new List<Deck>();
-        private Deck _currentDeck;
-        private int _currentCardIndex = 0;
-        private bool _difficultySelected = false;
+        private StudySession _logic = new StudySession();
+        private DeckIO _IOLogic = new DeckIO();
+        //
         public MainWindow()
         {
             InitializeComponent();
-
-            LoadTestDecks();
+            LoadDecksFromDisk();
             DeckSelection.ItemsSource = _decks;
             DeckSelection.DisplayMemberPath = "Name";
-
-        }
-
-        private void LoadTestDecks()
-        {
-            Deck TestDeck = new Deck();
-            TestDeck.Name = "Manually Loaded Test Deck";
-
-            TestDeck.Cards.Add(new Card
-            {
-                Front = "猫",
-                Furigana = "ねこ",
-                Intonation = "neko",
-                Answer = "Cat",
-                ShowFuriganaByDefault = true
-            });
-
-            TestDeck.Cards.Add(new Card
-            {
-                Front = "犬",
-                Furigana = "いぬ",
-                Intonation = "inu",
-                Answer = "Dog",
-                ShowFuriganaByDefault = true
-            });
-
-            _decks.Add(TestDeck);
-
-            Deck TestDeck2 = new Deck();
-            TestDeck2.Name = "Manually Loaded Test Deck 2";
-
-            TestDeck2.Cards.Add(new Card
-            {
-                Front = "食べる",
-                Furigana = "たべる",
-                Intonation = "taberu",
-                Answer = "To Eat",
-                ShowFuriganaByDefault = true
-            });
-
-            _decks.Add(TestDeck2);
         }
 
         private void ShowScreen(UIElement screen)
         {
             foreach (UIElement child in MainGrid.Children)
             {
-                if (child is Grid)
+                if (child is Grid grid)
                 {
-                    child.Visibility = Visibility.Collapsed;
+                    grid.Visibility = Visibility.Collapsed;
+                    grid.IsEnabled = false;
                 }
             }
 
-            screen.Visibility = Visibility.Visible;
+            if (screen is Grid targetGrid)
+            {
+                targetGrid.Visibility = Visibility.Visible;
+                targetGrid.IsEnabled = true;
+            }
         }
 
         private void StudyButton_Click(object sender, RoutedEventArgs e)
@@ -93,18 +61,10 @@ namespace StudySystem
         private void DeckStudyButton_Click(object sender, RoutedEventArgs e)
         {
             Deck selectedDeck = DeckSelection.SelectedItem as Deck;
-            if (selectedDeck == null)
-            {
-                return;
-            }
 
-            if (selectedDeck == null || selectedDeck.Cards.Count == 0)
-            {
-                return;
-            }
+            if (selectedDeck == null || selectedDeck.Cards.Count == 0) { return; }
 
-            _currentDeck = selectedDeck;
-            _currentCardIndex = 0;
+            _logic.StartDeck(selectedDeck);
 
             UpdateCardScreen();
             ShowScreen(CardScreen);
@@ -112,35 +72,64 @@ namespace StudySystem
 
         private void UpdateCardScreen()
         {
-            if (_currentDeck == null || _currentDeck.Cards.Count == 0)
-            {
-                return;
-            }
 
-            Card currentCard = _currentDeck.Cards[_currentCardIndex];
-            CardFrontText.Text = currentCard.Front;
-            CardFuriganaText.Text = currentCard.FuriganaDisplay;
-            CardAnswerText.Text = currentCard.Answer;
-            CardIntonationText.Text = currentCard.Intonation;
-            HardButton.IsEnabled = true;
-            NormalButton.IsEnabled = true;
-            EasyButton.IsEnabled = true;
-            _difficultySelected = false;
-            AnswerContainer.Visibility = Visibility.Collapsed;
+            Card currentCard = _logic.CurrentCard;
+            if (currentCard == null) { return; }
+
+            MainCardView.CardFrontText.Text = currentCard.Front;
+            MainCardView.CardReadingText.Text = currentCard.Reading;
+            MainCardView.CardAnswerText.Text = currentCard.Answer;
+            MainCardView.CardPronunciationText.Text = currentCard.Pronunciation;
+            MainCardView.setAnswerVisible(false);//Toggles the AnswerText on/off
+            currentCard.LastResult = null;
+
             ShowAnswerButton.Visibility = Visibility.Visible;
             ShowAnswerButton.IsEnabled = false;
             ShowAnswerButton.Opacity = 0.4;
+
             NextButton.Visibility = Visibility.Collapsed;
             NextButton.IsEnabled = false;
             NextButton.Opacity = 0.4;
-            ResetButtons();
+            SelectDifficultyButton();
+            if (currentCard.LastResult.HasValue)
+            {
+                switch (currentCard.LastResult.Value)
+                {
+                    case Card.CardResult.Hard:
+                        SelectButton(HardButton);
+                        break;
+
+                    case Card.CardResult.Normal:
+                        SelectButton(NormalButton);
+                        break;
+
+                    case Card.CardResult.Easy:
+                        SelectButton(EasyButton);
+                        break;
+                }
+            }
+        }
+
+        private void BuilderFields_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            RefreshBuilderPreview();
+        }
+
+        private void RefreshBuilderPreview()
+        {
+            EditorCardView.SetCard(new Card
+            {
+                Front = BuilderFrontTextBox.Text,
+                Reading = BuilderReadingTextBox.Text,
+                Pronunciation = BuilderPronunciationTextBox.Text,
+                Answer = BuilderAnswerTextBox.Text
+            });
         }
 
         private void ShowAnswerButton_Click(object sender, RoutedEventArgs e)
         {
-            AnswerContainer.Visibility = Visibility.Visible;
+            MainCardView.setAnswerVisible(true);//Toggles the AnswerText on/off
             ShowAnswerButton.Visibility = Visibility.Collapsed;
-            ShowAnswerButton.IsEnabled = false;
             NextButton.Visibility = Visibility.Visible;
             NextButton.IsEnabled = true;
             NextButton.Opacity = 1.0;
@@ -148,21 +137,19 @@ namespace StudySystem
 
         private void NextCardButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_currentDeck == null || _currentDeck.Cards.Count == 0)
-            {
-                return;
-            }
-            _currentCardIndex++;
-            if (_currentCardIndex >= _currentDeck.Cards.Count)
-            {
-                _currentCardIndex = 0;
-            }
+            _logic.NextCard();
             UpdateCardScreen();
+        }
+
+        private void BuilderButton_Click(object sender, RoutedEventArgs e)
+        {
+            EditorCardView.AnswerContainer.Opacity = 1.0;
+            ShowScreen(BuilderScreen);
         }
 
         private void SelectButton(Button selected)
         {
-            ResetButtons();
+            SelectDifficultyButton();
             selected.BorderThickness = new Thickness(2);
             selected.BorderBrush = (Brush)new BrushConverter().ConvertFromString("#C6C6C6");
             selected.Opacity = 1.0;
@@ -174,23 +161,7 @@ namespace StudySystem
             }
         }
 
-        private void ResetButtons()
-        {
-            foreach (var btn in new[] { HardButton, NormalButton, EasyButton })
-            {
-                btn.BorderThickness = new Thickness(1);
-                btn.BorderBrush = (Brush)new BrushConverter().ConvertFromString("#555555");
-                btn.Opacity = 1.0;
-            }
-        }
-
-        private void EnableAnswer()
-        {
-            ShowAnswerButton.IsEnabled = true;
-            ShowAnswerButton.Opacity = 1.0;
-        }
-
-        private void SettingsButton_Click(Object sender, RoutedEventArgs e)
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
             ShowScreen(SettingsScreen);
         }
@@ -204,28 +175,220 @@ namespace StudySystem
             Application.Current.Shutdown();
         }
 
+        private void HandleDifficultySelection(Card.CardResult result, Button button)
+        {
+            bool selected = _logic.ToggleResult(result);
+
+            if (!selected)
+            {
+                ResetDifficultyButtons();
+                SelectDifficultyButton();
+                _ShowAnswerButton(false);//Toggles AnswerButton on/off
+                return;
+            }
+            _ShowAnswerButton(true);//Toggles AnswerButton on/off
+            SelectButton(button);
+        }
+
         private void HardButton_Click(object sender, RoutedEventArgs e)
         {
-            _difficultySelected = true;
-            _currentDeck.Cards[_currentCardIndex].LastResult = Card.CardResult.Hard;
-            SelectButton(HardButton);
-            EnableAnswer();
+            HandleDifficultySelection(Card.CardResult.Hard, (Button)sender);
         }
 
         private void NormalButton_Click(object sender, RoutedEventArgs e)
         {
-            _difficultySelected = true;
-            _currentDeck.Cards[_currentCardIndex].LastResult = Card.CardResult.Normal;
-            SelectButton(NormalButton);
-            EnableAnswer();
+            HandleDifficultySelection(Card.CardResult.Normal, (Button)sender);
         }
 
         private void EasyButton_Click(object sender, RoutedEventArgs e)
         {
-            _difficultySelected = true;
-            _currentDeck.Cards[_currentCardIndex].LastResult = Card.CardResult.Easy;
-            SelectButton(EasyButton);
-            EnableAnswer();
+            HandleDifficultySelection(Card.CardResult.Easy, (Button)sender);
+        }
+
+        private void ResetDifficultyButtons()
+        {
+            EasyButton.Opacity = 1.0;
+            NormalButton.Opacity = 1.0;
+            HardButton.Opacity = 1.0;
+        }
+
+        private void SelectDifficultyButton()
+        {
+            foreach (var btn in new[] { HardButton, NormalButton, EasyButton })
+            {
+                btn.BorderThickness = new Thickness(1);
+                btn.BorderBrush = (Brush)new BrushConverter().ConvertFromString("#555555");
+                btn.Opacity = 1.0;
+            }
+        }
+
+        private void ImportDeckButton_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new OpenFileDialog
+            {
+                Filter = "JCard Files (*.jcard)|*.jcard",
+                Multiselect = false
+            };
+
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            string sourcePath = dialog.FileName;
+            string folder = _IOLogic.GetDecksFolder();
+
+            string fileName = System.IO.Path.GetFileName(sourcePath);
+            string destPath = System.IO.Path.Combine(folder, fileName);
+
+            
+            try
+            {
+                if (File.Exists(destPath))
+                {
+                    //already exists
+                    MessageBox.Show("A deck with this name already exists." +
+                        "\r\n\r\nPlease choose a different name or replace the existing file.");
+                }
+                else if (!File.Exists(destPath))
+                {
+                    File.Copy(sourcePath, destPath, true);
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Error has occured: \n" + ex.Message);
+            }
+
+            LoadDecksFromDisk();
+            RefreshDeckSelection();
+        }
+
+        private void ImportDecksButton_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new OpenFileDialog
+            {
+                Filter = "JCard Files (*.jcard)|*.jcard",
+                Multiselect = true
+            };
+
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            string destFolder = _IOLogic.GetDecksFolder();
+
+            foreach (string sourcePath in dialog.FileNames)
+            {
+                string fileName = System.IO.Path.GetFileName(sourcePath);
+                string destPath = System.IO.Path.Combine(destFolder, fileName);
+
+                File.Copy(sourcePath, destPath, true);
+            }
+            MessageBox.Show("Deck(s) imported successfully.");
+            LoadDecksFromDisk();
+            RefreshDeckSelection();
+        }
+
+        private void SaveDeckButton_Click(object sender, RoutedEventArgs e)
+        {
+            Deck selectedDeck = DeckSelection.SelectedItem as Deck;
+
+            if (selectedDeck == null || selectedDeck.Cards.Count == 0)
+            {
+                MessageBox.Show("No deck selected.");
+                return;
+            }
+
+            string folder = _IOLogic.GetDecksFolder();
+            string fileName;
+
+            fileName = selectedDeck.Name.Replace(" ", "") + ".jcard";
+            fileName = fileName.Replace("_", "");
+            string path = System.IO.Path.Combine(folder, fileName);
+
+            _IOLogic.WriteDeck(selectedDeck, path);
+
+            MessageBox.Show("Deck saved.");
+        }
+
+        private void CreateTemplateDeck_Click(object sender, RoutedEventArgs e)
+        {
+            Deck templateDeck = new Deck();
+            templateDeck.Name = "Template Deck";
+
+            templateDeck.Cards.Add(new Card
+            {
+                Front = "食べる",
+                Reading = "たべる",
+                Pronunciation = "",
+                Answer = "to eat"
+            });
+
+            templateDeck.Cards.Add(new Card
+            {
+                Front = "飲む",
+                Reading = "のむ",
+                Pronunciation = "",
+                Answer = "to drink"
+            });
+
+            templateDeck.Cards.Add(new Card
+            {
+                Front = "見る",
+                Reading = "みる",
+                Pronunciation = "",
+                Answer = "to see"
+            });
+
+            string folder = _IOLogic.GetDecksFolder();
+            string fileName = templateDeck.Name.Replace(" ", "") + ".jcard";
+            fileName = fileName.Replace("_", "");
+            string path = System.IO.Path.Combine(folder, fileName);
+            try
+            {
+                _IOLogic.WriteDeck(templateDeck, path);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error happened: \n" + ex.Message);
+            }
+
+            LoadDecksFromDisk();
+            RefreshDeckSelection();
+        }
+
+        private void _ShowAnswerButton(bool value)
+        {
+            switch (value)
+            {
+                case true:
+                    ShowAnswerButton.Opacity = 1.0;
+                    ShowAnswerButton.IsEnabled = true;
+                    break;
+                case false:
+                    ShowAnswerButton.Opacity = 0.4;
+                    ShowAnswerButton.IsEnabled = false;
+                    break;
+            }
+        }
+
+        private void SaveAllDecksButton_Click(object sender, RoutedEventArgs e)
+        {
+            _IOLogic.SaveAllDecks(_decks);
+        }
+
+        private void LoadDecksFromDisk()
+        {
+            _decks = _IOLogic.LoadAllDecks();
+        }
+
+        private void RefreshDeckSelection()
+        {
+            DeckSelection.ItemsSource = null;
+            DeckSelection.ItemsSource = _decks;
+            DeckSelection.DisplayMemberPath = "Name";
         }
     }
 }
