@@ -52,7 +52,7 @@
 
 <h2>Deck Editor</h2>
 <p>
-  <img width="1919" height="1032" alt="DeckEditScreen" src="https://github.com/user-attachments/assets/ff57a5a0-c1ee-49ac-9585-62f2c00518b1" />
+  <img width="1918" height="1029" alt="DeckEditScreen_002" src="https://github.com/user-attachments/assets/24c31990-df50-4166-ae93-8b78c467ad5c" />
 ^ This is the "DeckEditScreen",
   Where you have many different things available.
   The buttons do nothing at the moment, concept idea of what they will be and what should exist etc.
@@ -60,6 +60,16 @@
 
   You can see above at top left, I entered in 'sample' text,
   this is the field the user enters in, and it gets displayed real time on the right side.
+  <br>
+  <h2>
+    Updated the image to reflect the current state as of V0.1.9
+    Currently added the 2 dropdown boxes at bottom left.
+    They each populate correctly now. Left one gets filled with the Decks,
+    and right one with the Cards from the selected deck on left.
+        These also fill the text boxes above with their card info correctly.
+        The save/load/etc buttons do not work still,
+        not started on Implementing them as of now.
+  </h2>
   <br><br><br>
 </p>
 
