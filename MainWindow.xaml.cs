@@ -9,6 +9,7 @@ using StudySystem.Core;
 using StudySystem.Core.JCard;
 using StudySystem.Controls;
 using StudySystem.Screens;
+using System.Linq;
 
 namespace StudySystem
 {
@@ -17,11 +18,14 @@ namespace StudySystem
         private List<Deck> _decks = new List<Deck>();
         private StudySession _logic = new StudySession();
         private DeckIO _IOLogic = new DeckIO();
+        private List<UIElement> _screens;
+        private Deck SelectedEditorDeck;
+        private Card SelectedEditorCard;
         public MainWindow()
         {
             InitializeComponent();
             LoadDecksFromDisk();
-            EditorLoadDecksFromDisk();
+            EditorLoadDecksIntoComboBox();
 
             DeckSelection.ItemsSource = _decks;
             DeckSelection.DisplayMemberPath = "Name";
@@ -44,6 +48,15 @@ namespace StudySystem
 
         private void ShowScreen(UIElement screen)
         {
+
+            //HomeScreen.Visibility = Visibility.Collapsed;
+            //StudyScreen.Visibility = Visibility.Collapsed;
+            //BuilderScreen.Visibility = Visibility.Collapsed;
+            //SettingsScreen.Visibility = Visibility.Collapsed;
+            //CardScreen.Visibility = Visibility.Collapsed;
+            //
+            //screen.Visibility = Visibility.Visible;
+
             foreach (UIElement child in MainGrid.Children)
             {
                 child.Visibility = Visibility.Collapsed;
@@ -52,6 +65,18 @@ namespace StudySystem
             screen.Visibility = Visibility.Visible;
             screen.IsEnabled = true;
         }
+
+        //private void InitializeScreens()
+        //{
+        //    _screens = new List<UIElement>
+        //    {
+        //        HomeScreen,
+        //        StudyScreen,
+        //        BuilderScreen,
+        //        SettingsScreen,
+        //        CardScreen
+        //    };
+        //}
 
         private void StudyButton_Click(object sender, RoutedEventArgs e)
         {
@@ -277,13 +302,13 @@ namespace StudySystem
         private void SaveDeckButton_Click(object sender, RoutedEventArgs e)
         {
             Deck selectedDeck = BuilderScreen.DeckComboBoxControl.SelectedItem as Deck;
-
+            SelectedEditorDeck = selectedDeck;
+            SaveCard();
             if (selectedDeck == null || selectedDeck.Cards.Count == 0)
             {
                 MessageBox.Show("No deck selected.");
                 return;
             }
-
             string folder = _IOLogic.GetDecksFolder();
             string fileName;
 
@@ -292,8 +317,20 @@ namespace StudySystem
             string path = System.IO.Path.Combine(folder, fileName);
 
             _IOLogic.WriteDeck(selectedDeck, path);
-
+            EditorLoadDecksIntoComboBox();
             MessageBox.Show("Deck saved.");
+        }
+
+        private void SaveCard()
+        {
+            SelectedEditorCard = BuilderScreen.CardComboBoxControl.SelectedItem as Card;
+            if (SelectedEditorCard != null)
+            {
+                SelectedEditorCard.Front = BuilderScreen.EditorCardViewControl.CardFrontText.Text;
+                SelectedEditorCard.Reading = BuilderScreen.EditorCardViewControl.CardReadingText.Text;
+                SelectedEditorCard.Answer = BuilderScreen.EditorCardViewControl.CardAnswerText.Text;
+                SelectedEditorCard.Pronunciation = BuilderScreen.EditorCardViewControl.CardPronunciationText.Text;
+            }
         }
 
         private void CreateTemplateDeck_Click(object sender, RoutedEventArgs e)
@@ -367,7 +404,7 @@ namespace StudySystem
             _decks = _IOLogic.LoadAllDecks();
         }
 
-        private void EditorLoadDecksFromDisk()
+        private void EditorLoadDecksIntoComboBox()
         {
             BuilderScreen.DeckComboBoxControl.ItemsSource = _decks;
         }
