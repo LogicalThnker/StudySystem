@@ -19,6 +19,7 @@ namespace StudySystem.Core.JCard
 
         [JsonIgnore]
         public CardResult? LastResult { get; set; }
+        [JsonIgnore]
         public int Index { get; set; }
         public string DisplayName
         {

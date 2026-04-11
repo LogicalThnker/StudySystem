@@ -1,23 +1,14 @@
 ﻿using Microsoft.Win32;
-using StudySystem.Core;
-using StudySystem.Core.JCard;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using StudySystem.Core;
+using StudySystem.Core.JCard;
 using StudySystem.Controls;
+using StudySystem.Screens;
 
 namespace StudySystem
 {
@@ -31,24 +22,35 @@ namespace StudySystem
             InitializeComponent();
             LoadDecksFromDisk();
             EditorLoadDecksFromDisk();
+
+            DeckSelection.ItemsSource = _decks;
+            DeckSelection.DisplayMemberPath = "Name";
+
+            BuilderScreen.FrontTextBoxControl.TextChanged += BuilderFields_TextChanged;
+            BuilderScreen.ReadingTextBoxControl.TextChanged += BuilderFields_TextChanged;
+            BuilderScreen.PronunciationTextBoxControl.TextChanged += BuilderFields_TextChanged;
+            BuilderScreen.AnswerTextBoxControl.TextChanged += BuilderFields_TextChanged;
+
+            BuilderScreen.DeckComboBoxControl.SelectionChanged += DeckComboBox_SelectionChanged;
+            BuilderScreen.CardComboBoxControl.SelectionChanged += CardComboBox_SelectionChanged;
+
+            BuilderScreen.HomeButtonControl.Click += BackToHomeButton_Click;
+            BuilderScreen.SaveButtonControl.Click += SaveDeckButton_Click;
+            //BuilderScreen.PreviousCardButtonControl.Click += PreviousCard_Click;
+            //BuilderScreen.NextCardButtonControl.Click += NextCard_Click;
+            //BuilderScreen.AddCardButtonControl.Click += AddCard_Click;
+            //BuilderScreen.DeleteCardButtonControl.Click += DeleteCard_Click;
         }
 
         private void ShowScreen(UIElement screen)
         {
             foreach (UIElement child in MainGrid.Children)
             {
-                if (child is Grid grid)
-                {
-                    grid.Visibility = Visibility.Collapsed;
-                    grid.IsEnabled = false;
-                }
+                child.Visibility = Visibility.Collapsed;
+                child.IsEnabled = false;
             }
-
-            if (screen is Grid targetGrid)
-            {
-                targetGrid.Visibility = Visibility.Visible;
-                targetGrid.IsEnabled = true;
-            }
+            screen.Visibility = Visibility.Visible;
+            screen.IsEnabled = true;
         }
 
         private void StudyButton_Click(object sender, RoutedEventArgs e)
@@ -108,22 +110,6 @@ namespace StudySystem
             }
         }
 
-        private void BuilderFields_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            RefreshBuilderPreview();
-        }
-
-        private void RefreshBuilderPreview()
-        {
-            EditorCardView.SetCard(new Card
-            {
-                Front = BuilderFrontTextBox.Text,
-                Reading = BuilderReadingTextBox.Text,
-                Pronunciation = BuilderPronunciationTextBox.Text,
-                Answer = BuilderAnswerTextBox.Text
-            });
-        }
-
         private void ShowAnswerButton_Click(object sender, RoutedEventArgs e)
         {
             MainCardView.SetAnswerVisible(true);//Toggles the AnswerText on/off
@@ -141,7 +127,7 @@ namespace StudySystem
 
         private void BuilderButton_Click(object sender, RoutedEventArgs e)
         {
-            EditorCardView.CardAnswerText.Visibility = Visibility.Visible;
+            BuilderScreen.EditorCardViewControl.CardAnswerText.Visibility = Visibility.Visible;
             ShowScreen(BuilderScreen);
         }
 
@@ -244,7 +230,6 @@ namespace StudySystem
             {
                 if (File.Exists(destPath))
                 {
-                    //already exists
                     MessageBox.Show("A deck with this name already exists." +
                         "\r\n\r\nPlease choose a different name or replace the existing file.");
                 }
@@ -259,7 +244,7 @@ namespace StudySystem
             }
 
             LoadDecksFromDisk();
-            RefreshDeckSelection();
+            RefreshEditorDeckSelection();
         }
 
         private void ImportDecksButton_Click(object sender, RoutedEventArgs e)
@@ -286,12 +271,12 @@ namespace StudySystem
             }
             MessageBox.Show("Deck(s) imported successfully.");
             LoadDecksFromDisk();
-            RefreshDeckSelection();
+            RefreshEditorDeckSelection();
         }
 
         private void SaveDeckButton_Click(object sender, RoutedEventArgs e)
         {
-            Deck selectedDeck = DeckSelection.SelectedItem as Deck;
+            Deck selectedDeck = BuilderScreen.DeckComboBoxControl.SelectedItem as Deck;
 
             if (selectedDeck == null || selectedDeck.Cards.Count == 0)
             {
@@ -354,7 +339,7 @@ namespace StudySystem
             }
 
             LoadDecksFromDisk();
-            RefreshDeckSelection();
+            RefreshStudyDeckSelection();
         }
 
         private void _ShowAnswerButton(bool value)
@@ -384,23 +369,46 @@ namespace StudySystem
 
         private void EditorLoadDecksFromDisk()
         {
-            DeckComboBox.ItemsSource = _decks;
+            BuilderScreen.DeckComboBoxControl.ItemsSource = _decks;
         }
 
-        private void RefreshDeckSelection()
+        private void RefreshStudyDeckSelection()
         {
             DeckSelection.ItemsSource = null;
             DeckSelection.ItemsSource = _decks;
             DeckSelection.DisplayMemberPath = "Name";
         }
 
+        private void RefreshEditorDeckSelection()
+        {
+            BuilderScreen.DeckComboBoxControl.ItemsSource = null;
+            BuilderScreen.DeckComboBoxControl.ItemsSource = _decks;
+            BuilderScreen.DeckComboBoxControl.DisplayMemberPath = "DisplayName";
+        }
+
+        private void RefreshBuilderPreview()
+        {
+            BuilderScreen.EditorCardViewControl.SetCard(new Card
+            {
+                Front = BuilderScreen.FrontTextBoxControl.Text,
+                Reading = BuilderScreen.ReadingTextBoxControl.Text,
+                Pronunciation = BuilderScreen.PronunciationTextBoxControl.Text,
+                Answer = BuilderScreen.AnswerTextBoxControl.Text
+            });
+        }
+
+        private void BuilderFields_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            RefreshBuilderPreview();
+        }
+
         private void DeckComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Deck selectedDeck = DeckComboBox.SelectedItem as Deck;
+            Deck selectedDeck = BuilderScreen.DeckComboBoxControl.SelectedItem as Deck;
 
             if (selectedDeck == null)
             {
-                CardComboBox.ItemsSource = null;
+                BuilderScreen.CardComboBoxControl.ItemsSource = null;
                 return;
             }
 
@@ -409,28 +417,28 @@ namespace StudySystem
                 selectedDeck.Cards[i].Index = i + 1;
             }
 
-            CardComboBox.ItemsSource = null;
-            CardComboBox.ItemsSource = selectedDeck.Cards;
+            BuilderScreen.CardComboBoxControl.ItemsSource = null;
+            BuilderScreen.CardComboBoxControl.ItemsSource = selectedDeck.Cards;
         }
 
         private void CardComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Card selectedCard = CardComboBox.SelectedItem as Card;
+            Card selectedCard = BuilderScreen.CardComboBoxControl.SelectedItem as Card;
 
             if (selectedCard == null)
             {
-                BuilderFrontTextBox.Text = "";
-                BuilderReadingTextBox.Text = "";
-                BuilderPronunciationTextBox.Text = "";
-                BuilderAnswerTextBox.Text = "";
+                BuilderScreen.FrontTextBoxControl.Text = "";
+                BuilderScreen.ReadingTextBoxControl.Text = "";
+                BuilderScreen.PronunciationTextBoxControl.Text = "";
+                BuilderScreen.AnswerTextBoxControl.Text = "";
                 RefreshBuilderPreview();
                 return;
             }
 
-            BuilderFrontTextBox.Text = selectedCard.Front;
-            BuilderReadingTextBox.Text = selectedCard.Reading;
-            BuilderPronunciationTextBox.Text = selectedCard.Pronunciation;
-            BuilderAnswerTextBox.Text = selectedCard.Answer;
+            BuilderScreen.FrontTextBoxControl.Text = selectedCard.Front;
+            BuilderScreen.ReadingTextBoxControl.Text = selectedCard.Reading;
+            BuilderScreen.PronunciationTextBoxControl.Text = selectedCard.Pronunciation;
+            BuilderScreen.AnswerTextBoxControl.Text = selectedCard.Answer;
 
             RefreshBuilderPreview();
         }

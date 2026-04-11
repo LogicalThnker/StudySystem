@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StudySystem"
         xmlns:controls="clr-namespace:StudySystem.Controls"
+        xmlns:screens="clr-namespace:StudySystem.Screens"
         mc:Ignorable="d"
         Title="Study System" 
         Height="700" 
@@ -17,7 +18,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Styles/MainStyles.xaml"/>
+                <ResourceDictionary Source="/StudySystem;component/Styles/MainStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -177,118 +178,10 @@
         </Grid>
 
         <!-- BuilderScreen -->
-        <Grid x:Name="BuilderScreen" Margin="0,0,0,0"
-              IsEnabled="False" Visibility="Collapsed">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-
-            <!-- Title -->
-            <Grid Grid.Row="0">
-                <TextBlock Text="Card Editor" Foreground="#C6C6C6"/>
-            </Grid>
-
-            <!-- Card Builder -->
-            <Grid Grid.Row="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="350"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
-                <!-- Inputs -->
-                <Grid Grid.Column="0" Margin="20">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <TextBlock Text="Front" Foreground="#C6C6C6" Grid.Row="0"
-                               Height="40" FontSize="24" HorizontalAlignment="Center"
-                               Margin="0,0,0,4" Padding="8,5"/>
-                    <TextBox x:Name="BuilderFrontTextBox" Grid.Row="1" Margin="0,0,0,10"
-                             AcceptsReturn="True" TextWrapping="Wrap"
-                             TextChanged="BuilderFields_TextChanged"
-                             Height="44" Width="200" FontSize="20" Padding="8,4"/>
-                    <TextBlock Text="Reading" Foreground="#C6C6C6" Grid.Row="2"
-                               Height="40" FontSize="24" HorizontalAlignment="Center"
-                               Margin="0,0,0,4" Padding="8,5"/>
-                    <TextBox x:Name="BuilderReadingTextBox" Grid.Row="3" Margin="0,0,0,10"
-                             AcceptsReturn="True" TextWrapping="Wrap"
-                             TextChanged="BuilderFields_TextChanged"
-                             Height="44" Width="200" FontSize="20" Padding="8,4"/>
-                    <TextBlock Text="Pronunciation" Foreground="#C6C6C6" Grid.Row="4"
-                               Height="40" FontSize="24" HorizontalAlignment="Center"
-                               Margin="0,0,0,4" Padding="8,5"/>
-                    <TextBox x:Name="BuilderPronunciationTextBox" Grid.Row="5" Margin="0,0,0,10"
-                             AcceptsReturn="True" TextWrapping="Wrap"
-                             TextChanged="BuilderFields_TextChanged"
-                             Height="44" Width="200" FontSize="20" Padding="8,4"/>
-                    <TextBlock Text="Answer" Foreground="#C6C6C6" Grid.Row="6"
-                               Height="40" FontSize="24" HorizontalAlignment="Center"
-                               Margin="0,0,0,4" Padding="8,5"/>
-                    <TextBox x:Name="BuilderAnswerTextBox" Grid.Row="7"
-                             AcceptsReturn="True" TextWrapping="Wrap"
-                             TextChanged="BuilderFields_TextChanged"
-                             Height="44" Width="200" FontSize="20" Padding="8,4"/>
-                </Grid>
-
-                <!-- Preview -->
-                <Grid Grid.Column="1">
-                    <controls:CardView x:Name="EditorCardView"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"/>
-                </Grid>
-            </Grid>
-
-            <!-- Buttons -->
-            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="Home" Margin="0,0,20,20"
-                        Style="{StaticResource MenuButtonStyle}"
-                        ToolTip="Brings to HomeScreen atm, not true back - WIP"
-                        Click="BackToHomeButton_Click"/>
-                <Button x:Name="PreviousCard" Content="Previous" Margin="0,0,20,20"
-                        Style="{StaticResource MenuButtonStyle}"
-                        ToolTip="Does Nothing Currently - WIP"/>
-                <Button x:Name="NextCard" Content="Next" Margin="0,0,20,20"
-                        Style="{StaticResource MenuButtonStyle}"
-                        ToolTip="Does Nothing Currently - WIP"/>
-                <Button x:Name="AddCard" Content="Add" Margin="0,0,0,20"
-                        Style="{StaticResource MenuButtonStyle}"
-                        ToolTip="Does Nothing Currently - WIP"/>
-                <Button x:Name="DeleteCard" Content="Remove" Margin="20,0,0,20"
-                        Style="{StaticResource MenuButtonStyle}"
-                        ToolTip="Does Nothing Currently - WIP"/>
-                <Button x:Name="Save" Content="Save" Margin="20,0,0,20"
-                        Style="{StaticResource MenuButtonStyle}"
-                        ToolTip="Does Nothing Currently - WIP"/>
-            </StackPanel>
+        <screens:BuilderScreenView x:Name="BuilderScreen"
+                                   Visibility="Collapsed">
             
-            <!-- ComboBoxes -->
-            <StackPanel Grid.Row="3" Orientation="Horizontal"
-                        HorizontalAlignment="Left" Margin="20,0,0,20">
-                <ComboBox x:Name="DeckComboBox" Width="200"
-                          Style="{StaticResource BuilderComboBoxStyle}"
-                          ItemContainerStyle="{StaticResource BuilderComboBoxItemStyle}"
-                          Margin="0,0,0,0" DisplayMemberPath="DisplayName"
-                          SelectionChanged="DeckComboBox_SelectionChanged"/>
-                <ComboBox x:Name="CardComboBox" Width="250"
-                          Style="{StaticResource BuilderComboBoxStyle}"
-                          ItemContainerStyle="{StaticResource BuilderComboBoxItemStyle}"
-                          Margin="0,0,0,0" DisplayMemberPath="DisplayName"
-                          SelectionChanged="CardComboBox_SelectionChanged"/>
-            </StackPanel>
-        </Grid>
+        </screens:BuilderScreenView>
 
         <!-- SettingsScreen -->
         <Grid x:Name="SettingsScreen" Background="#202020" Visibility="Collapsed">
