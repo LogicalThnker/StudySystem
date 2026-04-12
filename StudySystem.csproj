@@ -58,6 +58,9 @@
     <Compile Include="Screens\BuilderScreenView.xaml.cs">
       <DependentUpon>BuilderScreenView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Screens\CardScreenView.xaml.cs">
+      <DependentUpon>CardScreenView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Screens\HomeScreenView.xaml.cs">
       <DependentUpon>HomeScreenView.xaml</DependentUpon>
     </Compile>
@@ -65,6 +68,12 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Compile Include="Screens\SettingsScreenView.xaml.cs">
+      <DependentUpon>SettingsScreenView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Screens\StudyScreenView.xaml.cs">
+      <DependentUpon>StudyScreenView.xaml</DependentUpon>
+    </Compile>
     <Page Include="CardView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -84,7 +93,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Screens\CardScreenView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Screens\HomeScreenView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Screens\SettingsScreenView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Screens\StudyScreenView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

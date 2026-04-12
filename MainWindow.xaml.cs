@@ -27,8 +27,8 @@ namespace StudySystem
             LoadDecksFromDisk();
             EditorLoadDecksIntoComboBox();
 
-            DeckSelection.ItemsSource = _decks;
-            DeckSelection.DisplayMemberPath = "Name";
+            StudyScreen.DeckSelectionComboBoxControl.ItemsSource = _decks;
+            StudyScreen.DeckSelectionComboBoxControl.DisplayMemberPath = "Name";
 
             BuilderScreen.FrontTextBoxControl.TextChanged += BuilderFields_TextChanged;
             BuilderScreen.ReadingTextBoxControl.TextChanged += BuilderFields_TextChanged;
@@ -37,6 +37,7 @@ namespace StudySystem
 
             BuilderScreen.DeckComboBoxControl.SelectionChanged += DeckComboBox_SelectionChanged;
             BuilderScreen.CardComboBoxControl.SelectionChanged += CardComboBox_SelectionChanged;
+            StudyScreen.DeckSelectionComboBoxControl.SelectionChanged += DeckComboBox_SelectionChanged;
 
             BuilderScreen.HomeButtonControl.Click += BackToHomeButton_Click;
             BuilderScreen.SaveButtonControl.Click += SaveDeckButton_Click;
@@ -44,11 +45,16 @@ namespace StudySystem
             //BuilderScreen.NextCardButtonControl.Click += NextCard_Click;
             //BuilderScreen.AddCardButtonControl.Click += AddCard_Click;
             //BuilderScreen.DeleteCardButtonControl.Click += DeleteCard_Click;
+            //CardFrontText
             HomeScreen.StudyButtonControl.Click += StudyButton_Click;
             HomeScreen.BuilderButtonControl.Click += BuilderButton_Click;
             HomeScreen.SettingsButtonControl.Click += SettingsButton_Click;
             HomeScreen.ExitButtonControl.Click += ExitButton_Click;
             HomeScreen.TemplateDeckControl.Click += CreateTemplateDeck_Click;
+
+            StudyScreen.ImportDeckButtonControl.Click += ImportDeckButton_Click;
+            StudyScreen.StudyButtonControl.Click += StudyButton_Click;
+            StudyScreen.BackButtonControl.Click += BackToHomeButton_Click;
 
         }
 
@@ -88,10 +94,9 @@ namespace StudySystem
         {
             ShowScreen(StudyScreen);
         }
-
         private void DeckStudyButton_Click(object sender, RoutedEventArgs e)
         {
-            Deck selectedDeck = DeckSelection.SelectedItem as Deck;
+            Deck selectedDeck = StudyScreen.DeckSelectionComboBoxControl.SelectedItem as Deck;
 
             if (selectedDeck == null || selectedDeck.Cards.Count == 0) { return; }
 
@@ -107,35 +112,35 @@ namespace StudySystem
             Card currentCard = _logic.CurrentCard;
             if (currentCard == null) { return; }
 
-            MainCardView.CardFrontText.Text = currentCard.Front;
-            MainCardView.CardReadingText.Text = currentCard.Reading;
-            MainCardView.CardAnswerText.Text = currentCard.Answer;
-            MainCardView.CardPronunciationText.Text = currentCard.Pronunciation;
-            MainCardView.SetAnswerVisible(false);//Toggles the AnswerText on/off
+            CardScreen.MainCardViewControl.CardFrontText.Text = currentCard.Front;
+            CardScreen.MainCardViewControl.CardReadingText.Text = currentCard.Reading;
+            CardScreen.MainCardViewControl.CardAnswerText.Text = currentCard.Answer;
+            CardScreen.MainCardViewControl.CardPronunciationText.Text = currentCard.Pronunciation;
+            CardScreen.MainCardViewControl.SetAnswerVisible(false);//Toggles the AnswerText on/off
             currentCard.LastResult = null;
 
-            ShowAnswerButton.Visibility = Visibility.Visible;
-            ShowAnswerButton.IsEnabled = false;
-            ShowAnswerButton.Opacity = 0.4;
+            CardScreen.ShowAnswerButtonControl.Visibility = Visibility.Visible;
+            CardScreen.ShowAnswerButtonControl.IsEnabled = false;
+            CardScreen.ShowAnswerButtonControl.Opacity = 0.4;
 
-            NextButton.Visibility = Visibility.Collapsed;
-            NextButton.IsEnabled = false;
-            NextButton.Opacity = 0.4;
+            CardScreen.NextCardButtonControl.Visibility = Visibility.Collapsed;
+            CardScreen.NextCardButtonControl.IsEnabled = false;
+            CardScreen.NextCardButtonControl.Opacity = 0.4;
             SelectDifficultyButton();
             if (currentCard.LastResult.HasValue)
             {
                 switch (currentCard.LastResult.Value)
                 {
                     case Card.CardResult.Hard:
-                        SelectButton(HardButton);
+                        SelectButton(CardScreen.HardButtonControl);
                         break;
 
                     case Card.CardResult.Normal:
-                        SelectButton(NormalButton);
+                        SelectButton(CardScreen.NormalButtonControl);
                         break;
 
                     case Card.CardResult.Easy:
-                        SelectButton(EasyButton);
+                        SelectButton(CardScreen.EasyButtonControl);
                         break;
                 }
             }
@@ -143,11 +148,11 @@ namespace StudySystem
 
         private void ShowAnswerButton_Click(object sender, RoutedEventArgs e)
         {
-            MainCardView.SetAnswerVisible(true);//Toggles the AnswerText on/off
-            ShowAnswerButton.Visibility = Visibility.Collapsed;
-            NextButton.Visibility = Visibility.Visible;
-            NextButton.IsEnabled = true;
-            NextButton.Opacity = 1.0;
+            CardScreen.MainCardViewControl.SetAnswerVisible(true);//Toggles the AnswerText on/off
+            CardScreen.ShowAnswerButtonControl.Visibility = Visibility.Collapsed;
+            CardScreen.NextCardButtonControl.Visibility = Visibility.Visible;
+            CardScreen.NextCardButtonControl.IsEnabled = true;
+            CardScreen.NextCardButtonControl.Opacity = 1.0;
         }
 
         private void NextCardButton_Click(object sender, RoutedEventArgs e)
@@ -169,7 +174,8 @@ namespace StudySystem
             selected.BorderBrush = (Brush)new BrushConverter().ConvertFromString("#C6C6C6");
             selected.Opacity = 1.0;
 
-            foreach (var btn in new[] { HardButton, NormalButton, EasyButton })
+            foreach (var btn in new[] { CardScreen.HardButtonControl,
+                CardScreen.NormalButtonControl, CardScreen.EasyButtonControl })
             {
                 if (btn != selected)
                     btn.Opacity = 0.85;
@@ -222,14 +228,15 @@ namespace StudySystem
 
         private void ResetDifficultyButtons()
         {
-            EasyButton.Opacity = 1.0;
-            NormalButton.Opacity = 1.0;
-            HardButton.Opacity = 1.0;
+            CardScreen.EasyButtonControl.Opacity = 1.0;
+            CardScreen.NormalButtonControl.Opacity = 1.0;
+            CardScreen.HardButtonControl.Opacity = 1.0;
         }
 
         private void SelectDifficultyButton()
         {
-            foreach (var btn in new[] { HardButton, NormalButton, EasyButton })
+            foreach (var btn in new[] { CardScreen.HardButtonControl,
+                CardScreen.NormalButtonControl, CardScreen.EasyButtonControl })
             {
                 btn.BorderThickness = new Thickness(1);
                 btn.BorderBrush = (Brush)new BrushConverter().ConvertFromString("#555555");
@@ -390,12 +397,12 @@ namespace StudySystem
             switch (value)
             {
                 case true:
-                    ShowAnswerButton.Opacity = 1.0;
-                    ShowAnswerButton.IsEnabled = true;
+                    CardScreen.ShowAnswerButtonControl.Opacity = 1.0;
+                    CardScreen.ShowAnswerButtonControl.IsEnabled = true;
                     break;
                 case false:
-                    ShowAnswerButton.Opacity = 0.4;
-                    ShowAnswerButton.IsEnabled = false;
+                    CardScreen.ShowAnswerButtonControl.Opacity = 0.4;
+                    CardScreen.ShowAnswerButtonControl.IsEnabled = false;
                     break;
             }
         }
@@ -417,9 +424,9 @@ namespace StudySystem
 
         private void RefreshStudyDeckSelection()
         {
-            DeckSelection.ItemsSource = null;
-            DeckSelection.ItemsSource = _decks;
-            DeckSelection.DisplayMemberPath = "Name";
+            StudyScreen.DeckSelectionComboBoxControl.ItemsSource = null;
+            StudyScreen.DeckSelectionComboBoxControl.ItemsSource = _decks;
+            StudyScreen.DeckSelectionComboBoxControl.DisplayMemberPath = "Name";
         }
 
         private void RefreshEditorDeckSelection()

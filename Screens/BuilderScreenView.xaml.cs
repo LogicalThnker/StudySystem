@@ -1,5 +1,4 @@
 ﻿using StudySystem.Controls;
-using StudySystem.Core.JCard;
 using System.Windows.Controls;
 
 namespace StudySystem.Screens
