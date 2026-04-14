@@ -75,10 +75,10 @@
   <p>
   Buttons:<br>
     Home - Brings to main screen<br>
-    Previous Card - Does nothing yet<br>
-    Next Card - Does nothing yet<br>
-    Add Card - Does nothing yet (This is one of the next ones I'm going to add)<br>
-    Remove Card - Does nothing yet (This is one of the next ones I'm going to add)<br>
+    Previous Card - Shows the previous Card in Deck. If exists<br>
+    Next Card - Shows the next card in Deck. If exists<br>
+    Add Card - Adds new Card after currently selected Card<br>
+    Remove Card - Removes currently selected Card from the selected Deck<br>
     Save Deck - Saves currently selected deck
     <br><br>
 <img width="167" height="60" alt="Home Button" src="https://github.com/user-attachments/assets/3fc06549-f507-495a-9e51-d17e702f9e33" />
