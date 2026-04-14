@@ -80,17 +80,21 @@
     Add Card - Does nothing yet (This is one of the next ones I'm going to add)
     Remove Card - Does nothing yet (This is one of the next ones I'm going to add)
     Save Deck - Saves currently selected deck
+    <br><br>
 <img width="826" height="89" alt="Buttons 001" src="https://github.com/user-attachments/assets/708abb16-0194-4d20-bcd9-1addfdc635c5" />
+<br><br>
 <img width="167" height="60" alt="Home Button" src="https://github.com/user-attachments/assets/3fc06549-f507-495a-9e51-d17e702f9e33" />
 
   Combo Boxes:
     Decks - Populates current Decks
     Cards - Populates current Card within said Deck
+    
 <img width="449" height="60" alt="ComboBoxes" src="https://github.com/user-attachments/assets/1441887c-c71d-46ea-884b-bfe5c3413101" />
 
   Text Boxes:
     Front + Reading + Pronunciation + Answer - All of these populate the respective fields of the card, showing a display to the right of what the card will look like.
       - These Text Box fields can be modified, they automatically update in memory, "Save Deck" button must be used or changes will not save.
+      
 <img width="240" height="374" alt="TextBoxes" src="https://github.com/user-attachments/assets/c248e93b-fc94-4e5f-98ec-55970fb71ce4" />
 
   </p>
