@@ -52,11 +52,10 @@
 
 <h2>Deck Editor</h2>
 <p>
-  <img width="1918" height="1029" alt="DeckEditScreen_002" src="https://github.com/user-attachments/assets/24c31990-df50-4166-ae93-8b78c467ad5c" />
+  <img width="1918" height="1029" alt="DeckEditScreen_003" src="https://github.com/user-attachments/assets/646384cb-fe16-4d82-b8ed-7d5fb386fbb6" />
 ^ This is the "DeckEditScreen",
   Where you have many different things available.
   The buttons do nothing at the moment, concept idea of what they will be and what should exist etc.
-  Currently the "Home" button is the only working one, bring you to "HomeScreen".
 
   You can see above at top left, I entered in 'sample' text,
   this is the field the user enters in, and it gets displayed real time on the right side.
@@ -72,6 +71,29 @@
         not started on Implementing them as of now.
   </p>
   <br><br><br>
+  <h2>Small patch before V0.2.0</h2>
+  <p>
+  Buttons:
+    Home - Brings to main screen
+    Previous Card - Does nothing yet
+    Next Card - Does nothing yet
+    Add Card - Does nothing yet (This is one of the next ones I'm going to add)
+    Remove Card - Does nothing yet (This is one of the next ones I'm going to add)
+    Save Deck - Saves currently selected deck
+<img width="826" height="89" alt="Buttons 001" src="https://github.com/user-attachments/assets/708abb16-0194-4d20-bcd9-1addfdc635c5" />
+<img width="167" height="60" alt="Home Button" src="https://github.com/user-attachments/assets/3fc06549-f507-495a-9e51-d17e702f9e33" />
+
+  Combo Boxes:
+    Decks - Populates current Decks
+    Cards - Populates current Card within said Deck
+<img width="449" height="60" alt="ComboBoxes" src="https://github.com/user-attachments/assets/1441887c-c71d-46ea-884b-bfe5c3413101" />
+
+  Text Boxes:
+    Front + Reading + Pronunciation + Answer - All of these populate the respective fields of the card, showing a display to the right of what the card will look like.
+      - These Text Box fields can be modified, they automatically update in memory, "Save Deck" button must be used or changes will not save.
+<img width="240" height="374" alt="TextBoxes" src="https://github.com/user-attachments/assets/c248e93b-fc94-4e5f-98ec-55970fb71ce4" />
+
+  </p>
 </p>
 
 <h2>Card View Screen</h2>
