@@ -36,8 +36,8 @@
 
             <!-- Text Fields -->
             <Grid>
-                <Border BorderBrush="#C6C6C6" BorderThickness="2" CornerRadius="16"
-                        MaxHeight="520" MaxWidth="300">
+                <Border BorderBrush="#C6C6C6" BorderThickness="3" CornerRadius="16"
+                        MaxHeight="580" MaxWidth="300">
                     <Grid Grid.RowSpan="5" VerticalAlignment="Center">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -49,11 +49,21 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="250"/>
                         </Grid.ColumnDefinitions>
-                        <controls:BuilderPanel x:Name="FrontField" LabelText="Front" Grid.Row="0" Grid.Column="0"/>
-                        <controls:BuilderPanel x:Name="ReadingField" LabelText="Reading" Grid.Row="1" Grid.Column="0"/>
-                        <controls:BuilderPanel x:Name="ExtrasField" LabelText="Extras" Grid.Row="2" Grid.Column="0"/>
-                        <controls:BuilderPanel x:Name="PronunciationField" LabelText="Pronunciation" Grid.Row="3" Grid.Column="0"/>
-                        <controls:BuilderPanel x:Name="AnswerField" LabelText="Answer" Grid.Row="4" Grid.Column="0"/>
+                        <controls:BuilderPanel x:Name="FrontField" LabelText="Front"
+                                               InputText="{Binding Front, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                               Grid.Row="0" Grid.Column="0"/>
+                        <controls:BuilderPanel x:Name="ReadingField" LabelText="Reading"
+                                               InputText="{Binding Reading, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                               Grid.Row="1" Grid.Column="0"/>
+                        <controls:BuilderPanel x:Name="ExtrasField" LabelText="Extras"
+                                               InputText="{Binding Extras, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                               Grid.Row="2" Grid.Column="0"/>
+                        <controls:BuilderPanel x:Name="PronunciationField" LabelText="Pronunciation"
+                                               InputText="{Binding Pronunciation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                               Grid.Row="3" Grid.Column="0"/>
+                        <controls:BuilderPanel x:Name="AnswerField" LabelText="Answer"
+                                               InputText="{Binding Answer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                               Grid.Row="4" Grid.Column="0"/>
                     </Grid>
                 </Border>
             </Grid>

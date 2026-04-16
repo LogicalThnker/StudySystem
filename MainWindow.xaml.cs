@@ -17,19 +17,12 @@ namespace StudySystem
         private DeckIO _IOLogic = new DeckIO();
         //private List<UIElement> _screens;
         private Deck SelectedEditorDeck;
-        private Card SelectedEditorCard;
         public MainWindow()
         {
             //HomeButtonControl
             InitializeComponent();
             LoadDecksFromDisk();
             EditorLoadDecksIntoComboBox();
-
-            BuilderScreen.FrontFieldControl.InputTextBoxControl.TextChanged += BuilderFields_TextChanged;
-            BuilderScreen.ReadingFieldControl.InputTextBoxControl.TextChanged += BuilderFields_TextChanged;
-            BuilderScreen.ExtrasFieldControl.InputTextBoxControl.TextChanged += BuilderFields_TextChanged;
-            BuilderScreen.PronunciationFieldControl.InputTextBoxControl.TextChanged += BuilderFields_TextChanged;
-            BuilderScreen.AnswerFieldControl.InputTextBoxControl.TextChanged += BuilderFields_TextChanged;
 
             StudyScreen.DeckSelectionComboBoxControl.ItemsSource = MainDecks;
             StudyScreen.DeckSelectionComboBoxControl.DisplayMemberPath = "Name";

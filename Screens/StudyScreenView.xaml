@@ -31,11 +31,12 @@
             
             <!-- Title -->
             <TextBlock Text="Study Screen" Foreground="#E5E5E5"
-                       FontSize="80" FontFamily="Segoe UI"
+                       FontSize="86" FontFamily="Segoe UI"
+                       FontWeight="Bold"
                        Margin="5,5,5,5" HorizontalAlignment="Center" >
                 <TextBlock.Effect>
-                    <DropShadowEffect Color="#3E454B" BlurRadius="0"
-                                      ShadowDepth="1" Opacity="1" />
+                    <DropShadowEffect Color="#3E454B" BlurRadius="4"
+                                      ShadowDepth="0" Opacity="0.6" />
                 </TextBlock.Effect>
             </TextBlock>
             

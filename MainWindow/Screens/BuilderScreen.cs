@@ -10,7 +10,6 @@ namespace StudySystem
 {
     public partial class MainWindow : Window
     {
-        private Card _previousSelectedCard;
         private bool _isLoadingCard;
 
         // Button Methods
@@ -18,7 +17,6 @@ namespace StudySystem
         {
             Deck selectedDeck = BuilderScreen.DeckComboBoxControl.SelectedItem as Deck;
             SelectedEditorDeck = selectedDeck;
-            SaveCurrentBuilderCardEdits();
             if (selectedDeck == null || selectedDeck.Cards.Count == 0)
             {
                 MessageBox.Show("No deck selected.");
@@ -116,33 +114,28 @@ namespace StudySystem
         {
             Deck selectedDeck = BuilderScreen.DeckComboBoxControl.SelectedItem as Deck;
             Card selectedCard = BuilderScreen.CardComboBoxControl.SelectedItem as Card;
-            if (selectedDeck == null)
-            { MessageBox.Show("No deck selected."); return; }
-            if (selectedCard == null || selectedDeck.Cards.Count == 0)
-            { MessageBox.Show("No card selected."); return; }
-            int removedIndex = selectedDeck.Cards.IndexOf(selectedCard);
-            if (removedIndex == -1)
-            { MessageBox.Show("Selected card was not found."); return; }
-            selectedDeck.Cards.RemoveAt(removedIndex);
+            if (selectedDeck == null || selectedCard == null) return;
+            int removedIndex = BuilderScreen.CardComboBoxControl.SelectedIndex;
+            selectedDeck.Cards.Remove(selectedCard);
             for (int i = 0; i < selectedDeck.Cards.Count; i++)
             { selectedDeck.Cards[i].Index = i + 1; }
+            _isLoadingCard = true;
             BuilderScreen.CardComboBoxControl.ItemsSource = null;
             BuilderScreen.CardComboBoxControl.ItemsSource = selectedDeck.Cards;
-            if (_isLoadingCard)
-                return;
-            _isLoadingCard = true;
-            if (selectedDeck.Cards.Count == 0) {
+            if (selectedDeck.Cards.Count == 0)
+            {
                 BuilderScreen.CardComboBoxControl.SelectedItem = null;
-                BuilderScreen.FrontFieldControl.InputText = "";
-                BuilderScreen.ReadingFieldControl.InputText = "";
-                BuilderScreen.ExtrasFieldControl.InputText = "";
-                BuilderScreen.PronunciationFieldControl.InputText = "";
-                BuilderScreen.AnswerFieldControl.InputText = "";
-                RefreshBuilderPreview(); return; }
-            if (removedIndex < selectedDeck.Cards.Count)
-            { BuilderScreen.CardComboBoxControl.SelectedItem = selectedDeck.Cards[removedIndex]; }
+                BuilderScreen.DataContext = new Card();
+            }
             else
-            { BuilderScreen.CardComboBoxControl.SelectedItem = selectedDeck.Cards[removedIndex - 1]; }
+            {
+                int newIndex = removedIndex;
+                if (newIndex >= selectedDeck.Cards.Count)
+                    newIndex = selectedDeck.Cards.Count - 1;
+                BuilderScreen.CardComboBoxControl.SelectedIndex = newIndex;
+                BuilderScreen.DataContext = selectedDeck.Cards[newIndex];
+            }
+            _isLoadingCard = false;
             UpdateCardNavigationButtons();
         }
 
@@ -172,21 +165,19 @@ namespace StudySystem
             if (currentIndex > 0) { BuilderScreen.CardComboBoxControl.SelectedIndex = currentIndex - 1; }
         }
 
-        private void BuilderFields_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (_isLoadingCard)
-                return;
-            RefreshBuilderPreview();
-        }
-
         private void BuilderDeckComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (_isLoadingCard)
                 return;
+            _isLoadingCard = true;
             Deck selectedDeck = BuilderScreen.DeckComboBoxControl.SelectedItem as Deck;
             if (selectedDeck == null)
             {
                 BuilderScreen.CardComboBoxControl.ItemsSource = null;
+                BuilderScreen.CardComboBoxControl.SelectedItem = null;
+                BuilderScreen.DataContext = new Card();
+                _isLoadingCard = false;
+                UpdateCardNavigationButtons();
                 return;
             }
             for (int i = 0; i < selectedDeck.Cards.Count; i++)
@@ -195,6 +186,17 @@ namespace StudySystem
             }
             BuilderScreen.CardComboBoxControl.ItemsSource = null;
             BuilderScreen.CardComboBoxControl.ItemsSource = selectedDeck.Cards;
+            if (selectedDeck.Cards.Count > 0)
+            {
+                BuilderScreen.CardComboBoxControl.SelectedIndex = 0;
+                BuilderScreen.DataContext = selectedDeck.Cards[0];
+            }
+            else
+            {
+                BuilderScreen.CardComboBoxControl.SelectedItem = null;
+                BuilderScreen.DataContext = new Card();
+            }
+            _isLoadingCard = false;
             UpdateCardNavigationButtons();
         }
 
@@ -203,65 +205,20 @@ namespace StudySystem
             if (_isLoadingCard)
                 return;
             _isLoadingCard = true;
-            if (_previousSelectedCard != null)
-            {
-                _previousSelectedCard.Front = BuilderScreen.FrontFieldControl.InputText;
-                _previousSelectedCard.Reading = BuilderScreen.ReadingFieldControl.InputText;
-                _previousSelectedCard.Extras = BuilderScreen.ExtrasFieldControl.InputText;
-                _previousSelectedCard.Pronunciation = BuilderScreen.PronunciationFieldControl.InputText;
-                _previousSelectedCard.Answer = BuilderScreen.AnswerFieldControl.InputText;
-            }
             Card selectedCard = BuilderScreen.CardComboBoxControl.SelectedItem as Card;
             if (selectedCard != null)
             {
-                BuilderScreen.FrontFieldControl.InputText = selectedCard.Front ?? "";
-                BuilderScreen.ReadingFieldControl.InputText = selectedCard.Reading ?? "";
-                BuilderScreen.ExtrasFieldControl.InputText = selectedCard.Extras ?? "";
-                BuilderScreen.PronunciationFieldControl.InputText = selectedCard.Pronunciation ?? "";
-                BuilderScreen.AnswerFieldControl.InputText = selectedCard.Answer ?? "";
+                BuilderScreen.DataContext = selectedCard;
             }
             else
             {
-                BuilderScreen.FrontFieldControl.InputText = "";
-                BuilderScreen.ReadingFieldControl.InputText = "";
-                BuilderScreen.ExtrasFieldControl.InputText = "";
-                BuilderScreen.PronunciationFieldControl.InputText = "";
-                BuilderScreen.AnswerFieldControl.InputText = "";
+                BuilderScreen.DataContext = selectedCard ?? new Card();
             }
             _isLoadingCard = false;
-            _previousSelectedCard = selectedCard;
-            RefreshBuilderPreview();
             UpdateCardNavigationButtons();
         }
 
         // Non-Button Methods
-        private void RefreshBuilderPreview()
-        {
-            BuilderScreen.EditorCardViewControl.SetCard(new Card
-            {
-                Front = BuilderScreen.FrontFieldControl.InputTextBoxControl.Text,
-                Reading = BuilderScreen.ReadingFieldControl.InputTextBoxControl.Text,
-                Extras = BuilderScreen.ExtrasFieldControl.InputTextBoxControl.Text,
-                Pronunciation = BuilderScreen.PronunciationFieldControl.InputTextBoxControl.Text,
-                Answer = BuilderScreen.AnswerFieldControl.InputTextBoxControl.Text
-            });
-        }
-
-        private void SaveCurrentBuilderCardEdits()
-        {
-            Card selectedCard = BuilderScreen.CardComboBoxControl.SelectedItem as Card;
-            if (selectedCard == null)
-                return;
-            if (_isLoadingCard)
-                return;
-            _isLoadingCard = true;
-            selectedCard.Front = BuilderScreen.FrontFieldControl.InputText;
-            selectedCard.Reading = BuilderScreen.ReadingFieldControl.InputText;
-            selectedCard.Extras = BuilderScreen.ExtrasFieldControl.InputText;
-            selectedCard.Pronunciation = BuilderScreen.PronunciationFieldControl.InputText;
-            selectedCard.Answer = BuilderScreen.AnswerFieldControl.InputText;
-            BuilderScreen.CardComboBoxControl.Items.Refresh();
-        }
 
         private void RefreshEditorDeckSelection()
         {
@@ -269,27 +226,6 @@ namespace StudySystem
             BuilderScreen.DeckComboBoxControl.ItemsSource = MainDecks;
             BuilderScreen.DeckComboBoxControl.DisplayMemberPath = "DisplayName";
         }
-
-        private void RefreshEditorCardSelection()
-        {
-            RefreshEditorDeckSelection();
-            Card selectedCard = BuilderScreen.CardComboBoxControl.SelectedItem as Card;
-            Deck selectedDeck = BuilderScreen.DeckComboBoxControl.SelectedItem as Deck;
-            BuilderScreen.DeckComboBoxControl.SelectedItem = selectedDeck;
-            if (selectedDeck == null)
-            {
-                BuilderScreen.CardComboBoxControl.ItemsSource = null;
-                return;
-            }
-            for (int i = 0; i < selectedDeck.Cards.Count; i++)
-            {
-                selectedDeck.Cards[i].Index = i + 1;
-            }
-            BuilderScreen.CardComboBoxControl.ItemsSource = null;
-            BuilderScreen.CardComboBoxControl.ItemsSource = selectedDeck.Cards;
-            BuilderScreen.CardComboBoxControl.SelectedItem = selectedCard;
-        }
-
 
         private void EditorLoadDecksIntoComboBox()
         {

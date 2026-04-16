@@ -84,6 +84,43 @@
         </Setter>
     </Style>
 
+    <!-- BuilderComboBoxItems -->
+    <Style x:Key="BuilderComboBoxItemStyle" TargetType="ComboBoxItem">
+        <Setter Property="Foreground" Value="#C6C6C6"/>
+        <Setter Property="Background" Value="#2D2D2D"/>
+        <Setter Property="Padding" Value="6,2"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBoxItem">
+                    <Border x:Name="ItemBorder"
+                            Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}"
+                            CornerRadius="4" Margin="2,1">
+                        <ContentPresenter />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ItemBorder"
+                                    Property="Background"
+                                    Value="#3A3A3A"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="ItemBorder"
+                                    Property="Background"
+                                    Value="#505050"/>
+                        </Trigger>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter TargetName="ItemBorder" Property="Background" Value="#3A3A3A"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="ItemBorder" Property="Background" Value="#505050"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- BuilderComboBox -->
     <Style x:Key="BuilderComboBoxStyle" TargetType="ComboBox">
         <Setter Property="Width" Value="250"/>
@@ -95,6 +132,7 @@
         <Setter Property="Background" Value="#2D2D2D"/>
         <Setter Property="BorderBrush" Value="#C6C6C6"/>
         <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="ItemContainerStyle" Value="{StaticResource BuilderComboBoxItemStyle}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ComboBox">
@@ -168,36 +206,6 @@
         </Setter>
     </Style>
     
-    <!-- BuilderComboBoxItems -->
-    <Style x:Key="BuilderComboBoxItemStyle" TargetType="ComboBoxItem">
-        <Setter Property="Foreground" Value="#C6C6C6"/>
-        <Setter Property="Background" Value="#2D2D2D"/>
-        <Setter Property="Padding" Value="6,2"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ComboBoxItem">
-                    <Border x:Name="ItemBorder"
-                            Background="{TemplateBinding Background}"
-                            Padding="{TemplateBinding Padding}">
-                        <ContentPresenter />
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="ItemBorder"
-                                    Property="Background"
-                                    Value="#3A3A3A"/>
-                        </Trigger>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="ItemBorder"
-                                    Property="Background"
-                                    Value="#505050"/>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-    
     <!-- BuilderTextFieldLabels -->
     <Style x:Key="EditorLabelStyle" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="Segoe UI"/>
@@ -215,8 +223,8 @@
         <Setter Property="Padding" Value="8,4,8,4"/>
         <Setter Property="FontFamily" Value="Segoe UI"/>
         <Setter Property="FontSize" Value="18"/>
-        <Setter Property="Foreground" Value="#292929"/>
-        <Setter Property="Background" Value="#C6C6C6"/>
+        <Setter Property="Foreground" Value="#C6C6C6"/>
+        <Setter Property="Background" Value="#292929"/>
         <Setter Property="BorderBrush" Value="#292929"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>

@@ -12,15 +12,16 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <!-- Style="{StaticResource EditorLabelStyle}" -->
-                <!-- Style="{StaticResource EditorTextBoxStyle}" -->
             </Grid.RowDefinitions>
             <TextBlock Text="{Binding LabelText, ElementName=Root}" Grid.Row="0"
-                       Style="{StaticResource EditorLabelStyle}"/>
-            <!-- Text="{Binding InputText, ElementName=Root, UpdateSourceTrigger=PropertyChanged}" -->
-            <TextBox x:Name="InputTextBox"
-                     Text="{Binding InputText, ElementName=Root}" Grid.Row="1"
-                     Style="{StaticResource EditorTextBoxStyle}"/>
+                       Style="{StaticResource EditorLabelStyle}" Foreground="#AFAFAF"/>
+            <Border Grid.Row="1" CornerRadius="6"
+                    Background="#C6C6C6" BorderBrush="#C6C6C6" BorderThickness="1"
+                    Padding="2" Margin="0,0,0,0">
+                <TextBox x:Name="InputTextBox" Foreground="#C6C6C6"
+                         Text="{Binding InputText, ElementName=Root, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource EditorTextBoxStyle}" BorderThickness="0"/>
+            </Border>
         </Grid>
     </Border>
 </UserControl>

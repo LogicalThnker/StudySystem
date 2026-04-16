@@ -14,19 +14,22 @@
                         HorizontalAlignment="Center" VerticalAlignment="Center">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
                             Margin="0,30,0,40">
-                    <TextBlock x:Name="CardFrontText"
+                    <TextBlock x:Name="CardFrontText" Text="{Binding Front}"
                                Foreground="#C6C6C6" FontSize="56" FontFamily="Meiryo UI"
                                Margin="0,0,20,0" HorizontalAlignment="Center" Opacity="1.0"/>
-                    <TextBlock x:Name="CardExtrasText"
-                               Foreground="#C6C6C6" FontSize="46" FontFamily="Meiryo UI"
-                               Margin="20,0,0,0" HorizontalAlignment="Center" Opacity="1.0"/>
-                    <TextBlock x:Name="CardReadingText"
+                    <TextBlock x:Name="CardReadingText" Text="{Binding Reading}"
                                Foreground="#AFAFAF" FontSize="30" FontFamily="Meiryo UI"
                                Margin="0,0,0,0" HorizontalAlignment="Center" Opacity="0.6"/>
                 </StackPanel>
+                <StackPanel>
+                    <TextBlock x:Name="CardExtrasText" Text="{Binding Extras}"
+                               Foreground="#9A9A9A" FontSize="28" FontFamily="Meiryo UI"
+                               Margin="0,0,0,0" HorizontalAlignment="Center" Opacity="1.0"/>
+                </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30,0,40">
-                    <TextBlock x:Name="CardPronunciationText" Foreground="#888888"
-                               FontSize="20" FontFamily="Meiryo UI" HorizontalAlignment="Center"/>
+                    <TextBlock x:Name="CardPronunciationText" Text="{Binding Pronunciation}"
+                               Foreground="#888888" FontSize="20"
+                               FontFamily="Meiryo UI" HorizontalAlignment="Center"/>
                 </StackPanel>
                 <Grid x:Name="AnswerContainer" HorizontalAlignment="Center"
                       Opacity="1.0">
@@ -37,10 +40,11 @@
                     <TextBlock Text="Answer: " Foreground="#C6C6C6"
                                FontSize="22" FontFamily="Meiryo UI"
                                Margin="16,-20,0,0" TextAlignment="Center"/>
-                    <TextBlock x:Name="CardAnswerText" Foreground="#C6C6C6"
-                               FontSize="44" FontFamily="Meiryo UI"
-                               Margin="0,0,0,0" HorizontalAlignment="Center"
-                               TextAlignment="Center" Visibility="Hidden"/>
+                    <TextBlock x:Name="CardAnswerText" Text="{Binding Answer}"
+                               Foreground="#C6C6C6" FontSize="44"
+                               FontFamily="Meiryo UI" Margin="0,0,0,0" 
+                               HorizontalAlignment="Center" TextAlignment="Center"
+                               Visibility="Hidden"/>
                 </Grid>
             </StackPanel>
         </Border>
