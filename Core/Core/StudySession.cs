@@ -11,6 +11,7 @@ namespace StudySystem.Core
     public class StudySession
     {
         public Deck CurrentDeck { get; private set; }
+
         public int CurrentCardIndex { get; private set; } = 0;
 
         public Card CurrentCard

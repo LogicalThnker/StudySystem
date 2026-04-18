@@ -12,6 +12,7 @@ namespace StudySystem
 {
     public partial class MainWindow : Window
     {
+        private UserSettings GlobalSettings { get; set; } = new UserSettings();
         private List<Deck> MainDecks = new List<Deck>();
         private List<Card> _studySessionCards = new List<Card>();
         private StudySession StudyDeck = new StudySession();

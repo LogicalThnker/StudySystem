@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace StudySystem.Core
 {
-    public class Settings
+    public class UserSettings
     {
-        /*-- Furigana --*/
         public bool ShowReadingByDefault { get; set; } = true;
         public bool ShowExtrasByDefault { get; set; } = true;
         public bool AutoAdvanceAfterAnswer { get; set; } = false;

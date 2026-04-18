@@ -1,4 +1,5 @@
 ﻿using StudySystem.Controls;
+using StudySystem.Core;
 using StudySystem.Core.JCard;
 using System;
 using System.Windows;
@@ -20,6 +21,13 @@ namespace StudySystem
         private void ShowAnswerButton_Click(object sender, RoutedEventArgs e)
         {
             CardScreen.MainCardViewControl.SetAnswerVisible(true);//Toggles the AnswerText on/off
+
+            if (GlobalSettings.AutoAdvanceAfterAnswer)
+            {
+                CardScreen.ShowAnswerButtonControl.Visibility = Visibility.Collapsed;
+                NextCard();
+                _showSavedDifficultySelection = true;
+            }
             CardScreen.ShowAnswerButtonControl.Visibility = Visibility.Collapsed;
             CardScreen.NextCardButtonControl.Visibility = Visibility.Visible;
             CardScreen.NextCardButtonControl.IsEnabled = true;
@@ -29,27 +37,25 @@ namespace StudySystem
 
         private void NextCardButton_Click(object sender, RoutedEventArgs e)
         {
+            NextCard();
+        }
+
+        private void NextCard()
+        {
             if (_studySessionCards == null || _studySessionCards.Count == 0)
                 return;
-
             _showSavedDifficultySelection = false;
             currentCardsInDeckPosition++;
             totalCardsShownCount++;
-
-
             Card currentCard = GetCurrentStudyCard();
             if (currentCard != null)
-            {
-                currentCard.LastResult = null;
-            }
-
+            { currentCard.LastResult = null; }
             if (_studySessionIndex >= _studySessionCards.Count - 1)
             {
                 StartStudySession();
                 UpdateCardScreen();
                 return;
             }
-
             _studySessionIndex++;
             UpdateCardScreen();
         }
@@ -122,6 +128,7 @@ namespace StudySystem
                 case Card.CardResult.Easy: return 2;
                 default: return 3;
             }
+            
         }
 
         private void SaveDifficultySelection(Card card, Card.CardResult diff)
@@ -138,14 +145,23 @@ namespace StudySystem
             // --- State: No difficulty selected ---
             if (!selected)
             {
+                // Toggles all Diff Buttons to 1.0 Opacity, Visible, !selected
                 ResetDifficultyButtons();
+
+                // ?
                 SelectDifficultyButton();
-                ShowAnswerButton(false);// Toggles AnswerButton on/off
+
+                // Toggles AnswerButton off
+                ShowAnswerButton(false);
                 return;
             }
 
             // --- State: Difficulty selected ---
-            ShowAnswerButton(true);// Toggles AnswerButton on/off
+            
+            // Toggles AnswerButton on
+            ShowAnswerButton(true);
+            
+            // Toggle all buttons except selectedButton to 0.85 opacity, and IsEnabled=false
             SelectButton(button);
         }
 
@@ -161,9 +177,6 @@ namespace StudySystem
 
         private void ResetDifficultyButtons()
         {
-            CardScreen.EasyButtonControl.Opacity = 1.0;
-            CardScreen.NormalButtonControl.Opacity = 1.0;
-            CardScreen.HardButtonControl.Opacity = 1.0;
             foreach (Button diffButton in CardScreen.DifficultyButtons)
             {
                 diffButton.Opacity = 1.0;

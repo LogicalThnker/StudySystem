@@ -47,7 +47,7 @@
     <Compile Include="Core\JCard\Card.cs" />
     <Compile Include="Core\JCard\Deck.cs" />
     <Compile Include="Core\JCard\DeckIO.cs" />
-    <Compile Include="Core\Settings.cs" />
+    <Compile Include="Core\UserSettings.cs" />
     <Compile Include="Core\StudySession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
